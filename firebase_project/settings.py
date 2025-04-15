@@ -29,31 +29,8 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-# Ensure Firebase initialization is properly handled
-try:
-    import firebase_admin
-    from firebase_admin import credentials
-    import json
-    import os
-
-    # Initialize Firebase with proper error handling
-    if 'FIREBASE_CREDENTIALS' in os.environ:
-        # For production: use environment variable
-        firebase_creds_dict = json.loads(os.environ.get('FIREBASE_CREDENTIALS'))
-        cred = credentials.Certificate(firebase_creds_dict)
-    else:
-        # For local development: use file
-        firebase_credentials_path = os.path.join(BASE_DIR, 'firebase_project', 'insightmanagementsolutio-9b168-firebase-adminsdk-1mfhg-68f1d9870e.json')
-        cred = credentials.Certificate(firebase_credentials_path)
-    
-    # Initialize the app if it's not already initialized
-    if not firebase_admin._apps:
-        firebase_admin.initialize_app(cred, {
-            'databaseURL': 'https://insightmanagementsolutio-9b168-default-rtdb.firebaseio.com/'
-        })
-except Exception as e:
-    print(f"Firebase initialization error: {e}")
-
+# Firebase initialization is now handled in firebase_init.py
+# This ensures Firebase is initialized before any views are loaded
 
 # Application definition
 
