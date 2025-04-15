@@ -20,31 +20,36 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-ve-@1eusin6ew9(b@!82@i5md94+(xc^lccmbw+(cco13a98i!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+# Update DEBUG setting to see more detailed error information
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = ['https://insight-management-solutions.onrender.com']
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-import firebase_admin
-from firebase_admin import credentials
-import json
-import os
-
-# Initialize Firebase
+# Ensure Firebase initialization is properly handled
 try:
+    import firebase_admin
+    from firebase_admin import credentials
+    import json
+    import os
+
+    # Initialize Firebase with proper error handling
     if 'FIREBASE_CREDENTIALS' in os.environ:
         # For production: use environment variable
         firebase_creds_dict = json.loads(os.environ.get('FIREBASE_CREDENTIALS'))
         cred = credentials.Certificate(firebase_creds_dict)
     else:
         # For local development: use file
-        cred = credentials.Certificate("C:/Users/asus/firebase_project/firebase_project/insightmanagementsolutio-9b168-firebase-adminsdk-1mfhg-68f1d9870e.json")
+        firebase_credentials_path = os.path.join(BASE_DIR, 'firebase_project', 'insightmanagementsolutio-9b168-firebase-adminsdk-1mfhg-68f1d9870e.json')
+        cred = credentials.Certificate(firebase_credentials_path)
     
-    firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://insightmanagementsolutio-9b168-default-rtdb.firebaseio.com/'
-    })
+    # Initialize the app if it's not already initialized
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app(cred, {
+            'databaseURL': 'https://insightmanagementsolutio-9b168-default-rtdb.firebaseio.com/'
+        })
 except Exception as e:
     print(f"Firebase initialization error: {e}")
 
