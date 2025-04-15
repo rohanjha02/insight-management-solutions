@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left; 
+        }
+
+        th {
+            background-color: #007bff;
+            color: #ddd;
+        }
+
+        .back-button {
+            background: linear-gradient(45deg, navy, royalblue);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 3px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background: linear-gradient(45deg, royalblue, navy);
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+
+        .status-message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #4CAF50;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #e8f5e9;
+        }
+
+        .status-message.error {
+            color: red;
+            background-color: #ffebee;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="{% url 'user_complaints' %}" class="back-button">Back to Complaints</a>
+    <h1>Complaint Details</h1>
+
+    {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
+    {% else %}
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Branch Code</td>
+                <td>{{ complaint.branch_code }}</td>
+            </tr>
+            <tr>
+                <td>Complaint Description</td>
+                <td>{{ complaint.complaint_description }}</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>{{ complaint.email }}</td>
+            </tr>
+            <tr>
+                <td>Machine Type</td>
+                <td>{{ complaint.machine_type }}</td>
+            </tr>
+            <tr>
+                <td>Mobile Number</td>
+                <td>{{ complaint.mobile_number }}</td>
+            </tr>
+            <tr>
+                <td>State</td>
+                <td>{{ complaint.state }}</td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td>{{ complaint.address }}</td>
+            </tr>
+
+            <!-- Assigned Engineer Details -->
+            <tr>
+                <td>Assigned Engineer</td>
+                <td>
+                    {% if assigned_engineer %}
+                        <strong>Name:</strong> {{ assigned_engineer.name }}<br>
+                        <strong>Contact:</strong> {{ assigned_engineer.contact }}<br>
+                        <strong>Email:</strong> {{ assigned_engineer.email }}
+                    {% else %}
+                        No engineer assigned.
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td>Remarks</td>
+                <td>{{ complaint.remarks }}</td>
+            </tr>
+        </table>
+
+        {% if amc_due_date %}
+            <div class="status-message {% if amc_status_message == 'Your complaint will not be considered as your AMC due date has passed.' %}error{% endif %}">
+                <strong>AMC Due Date:</strong> {{ amc_due_date }}<br>
+                <strong>Status:</strong> {{ amc_status_message }}
+            </div>
+        {% endif %}
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% load static %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: white;
+            color: black;
+            overflow-x: auto;
+        }
+        h1, h3, p {
+            text-align: center;
+        }
+        .table-container {
+            overflow-x: auto;
+            max-width: 100%;
+            margin-top: 60px; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            color: black;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px 15px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        td {
+            min-width: 80px;
+        }
+        th {
+            background-color: #0A1931;
+            color: white;
+        }
+        input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+        .filter_engineer_name, .month {
+            width: 10%;
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: linear-gradient(45deg, navy, royalblue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .back-btn:hover {
+            background: linear-gradient(45deg, royalblue, navy);
+            transform: scale(1.05);
+        }
+        .title-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 30px;
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+            display: inline-block;
+        }
+        .neon-text {
+            color: #39ff14; /* Neon green color */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'insight_management_solutions' %}" class="back-btn">Back to Home</a>
+    <div class="title-container">
+        <a href="{% url 'pm_view' %}" class="title"><img src="{% static 'logo1.png' %}" alt="Logo" style="width: 100px; height: auto;">Preventive Maintenance</a>
+    </div>
+    <form method="get" action="" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <label for="engineer_name" style="font-weight: bold;">Filter by Engineer Name:</label>
+        <select id="engineer_name" name="engineer_name" class="filter_engineer_name">
+            <option value="all" {% if selected_engineer == 'all' %}selected{% endif %}>-- All Engineers --</option>
+            {% for engineer in all_engineer_names %}
+                <option value="{{ engineer }}" {% if engineer == selected_engineer %}selected{% endif %}>{{ engineer }}</option>
+            {% endfor %}
+        </select>
+    
+        <label for="month" style="font-weight: bold;">Filter by Month:</label>
+        <select id="month" name="month" class="month">
+            <option value="all" {% if selected_month == 'all' %}selected{% endif %}>-- All Months --</option>
+            {% for month in months %}
+                <option value="{{ month }}" {% if month == selected_month %}selected{% endif %}>{{ month }}</option>
+            {% endfor %}
+        </select>
+    
+        <button type="submit" style="padding: 6px 12px; border-radius: 5px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+            Filter
+        </button>
+    </form>
+    
+    
+    
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>Customer Name</th>
+                <th>Branch Code</th>
+                <th>Machine Serial Number</th>
+                <th>Machine Type</th>
+                <th>PI Date</th>
+                <th>PI No.</th>
+                <th>AMC Due Date</th>
+                <th>Engineer Name</th>
+                <th>January</th>
+                <th>February</th>
+                <th>March</th>
+                <th>April</th>
+                <th>May</th>
+                <th>June</th>
+                <th>July</th>
+                <th>August</th>
+                <th>September</th>
+                <th>October</th>
+                <th>November</th>
+                <th>December</th>
+            </tr>
+            {% if data_list %}
+                {% for item in data_list %}
+                <tr data-record-key="{{ item.record_key }}">
+                    <td>{{ item.party_cb }}</td>
+                    <td>{{ item.branch_code }}</td>
+                    <td>{{ item.machine_serial_number }}</td>
+                    <td>{{ item.machine_type }}</td>
+                    <td>{{ item.pi_date }}</td>
+                    <td>{{ item.pi_no }}</td>
+                    <td>
+                        {% if item.amc_due_date %}
+                            {{ item.amc_due_date }}
+                        {% else %}
+                            <span class="neon-text">Under Warranty</span>
+                        {% endif %}
+                    </td>                                        
+                    <td><input type="text" class="engineer_name" data-record-key="{{ item.record_key }}" value="{{ item.engineer_name }}"></td>
+                    <td>
+                        <select class="January" data-record-key="{{ item.record_key }}" data-month="January">
+                            <option value="" {% if item.January == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.January == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="February" data-record-key="{{ item.record_key }}" data-month="February">
+                            <option value="" {% if item.February == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.February == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="March" data-record-key="{{ item.record_key }}" data-month="March">
+                            <option value="" {% if item.March == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.March == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="April" data-record-key="{{ item.record_key }}" data-month="April">
+                            <option value="" {% if item.April == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.April == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="May" data-record-key="{{ item.record_key }}" data-month="May">
+                            <option value="" {% if item.May == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.May == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="June" data-record-key="{{ item.record_key }}" data-month="June">
+                            <option value="" {% if item.June == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.June == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="July" data-record-key="{{ item.record_key }}" data-month="July">
+                            <option value="" {% if item.July == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.July == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="August" data-record-key="{{ item.record_key }}" data-month="August">
+                            <option value="" {% if item.August == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.August == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="September" data-record-key="{{ item.record_key }}" data-month="September">
+                            <option value="" {% if item.September == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.September == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="October" data-record-key="{{ item.record_key }}" data-month="October">
+                            <option value="" {% if item.October == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.October == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="November" data-record-key="{{ item.record_key }}" data-month="November">
+                            <option value="" {% if item.November == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.November == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="December" data-record-key="{{ item.record_key }}" data-month="December">
+                            <option value="" {% if item.December == '' %}selected{% endif %}></option>
+                            <option value="1" {% if item.December == '1' %}selected{% endif %}>1</option>
+                        </select>
+                    </td>                    
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="18" style="text-align: center;">No Billed Pro Forma Invoices Found</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    <div id="success-message" style="display:none; text-align:center; color:green; font-weight:bold; margin-top:10px;">
+        Update successful!
+    </div>
+
+    <script>
+            function updateFieldsBasedOnWarranty(event) {
+                var recordKey = $(this).data("record-key");
+                var engineerName = $(".engineer_name[data-record-key='" + recordKey + "']").val();
+                var January = $(".January[data-record-key='" + recordKey + "']").val();
+                var February = $(".February[data-record-key='" + recordKey + "']").val();
+                var March = $(".March[data-record-key='" + recordKey + "']").val();
+                var April = $(".April[data-record-key='" + recordKey + "']").val();
+                var May = $(".May[data-record-key='" + recordKey + "']").val();
+                var June = $(".June[data-record-key='" + recordKey + "']").val();
+                var July = $(".July[data-record-key='" + recordKey + "']").val();
+                var August = $(".August[data-record-key='" + recordKey + "']").val();
+                var September = $(".September[data-record-key='" + recordKey + "']").val();
+                var October = $(".October[data-record-key='" + recordKey + "']").val();
+                var November = $(".November[data-record-key='" + recordKey + "']").val();
+                var December = $(".December[data-record-key='" + recordKey + "']").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'update_pm' %}",
+                    data: JSON.stringify({
+                        "record_key": recordKey,
+                        "engineer_name": engineerName,
+                        "January": January,
+                        "February": February,
+                        "March": March,
+                        "April": April,
+                        "May": May,
+                        "June": June,
+                        "July": July,
+                        "August": August,
+                        "September": September,
+                        "October": October,
+                        "November": November,
+                        "December": December
+                    }),
+                    contentType: "application/json",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    success: function(response) {
+                        $("#success-message").fadeIn().delay(2000).fadeOut();
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error updating data: " + error);
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                $(".engineer_name, .January, .February, .March, .April, .May, .June, .July, .August, .September, .October, .November, .December")
+                    .on("change", updateFieldsBasedOnWarranty);
+            });
+
+            $(document).ready(function () {
+                // Get selected month from the Django template context
+                const selectedMonth = "{{ selected_month|escapejs }}";
+
+                // If a specific month is selected, hide other month columns
+                if (selectedMonth !== "all" && selectedMonth !== "") {
+                    const months = [
+                        "January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"
+                    ];
+
+                    // Hide all month columns except the selected one
+                    months.forEach(function(month) {
+                        if (month !== selectedMonth) {
+                            // Hide header column
+                            $("th:contains('" + month + "')").hide();
+
+                            // Hide each td of that month column
+                            $("td").each(function () {
+                                if ($(this).find("select." + month).length > 0) {
+                                    $(this).hide();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+    </script>
+</body>
+</html>

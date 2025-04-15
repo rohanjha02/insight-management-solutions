@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Forma Invoice</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+
+    {% load static %}
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        /* Form Styling */
+        form {
+            display: none; /* Initially hidden */
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 60%;
+            max-width: 700px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #1d4bae;
+        }
+
+        /* Table Styling */
+        .table-container {
+            width: 90%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #d6e4ff;
+        }
+
+        .status-dropdown {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+         /* Back Button Styling */
+         .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: linear-gradient(45deg, navy, royalblue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(45deg, royalblue, navy);
+            transform: scale(1.05);
+        }
+
+        /* Add Form Button */
+        .add-form-btn {
+            background: #2563eb;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .add-form-btn:hover {
+            background: #1b459f;
+        }
+
+        h1 img {
+            width: 100px;  /* Adjust the size as needed */
+            height: auto; /* Maintain aspect ratio */
+            vertical-align: middle; /* Align with text */
+            margin-right: 5px; /* Add spacing between logo and text */
+        }
+    </style>
+</head>
+
+<body>
+    <a href="{% url 'insight_management_solutions' %}" class="back-btn">Back to Home</a>
+    <h1><img src="{% static 'logo1.png' %}" alt="Logo">Pro Forma Invoice</h1>
+
+    <!-- Button to Show Form -->
+    <button class="add-form-btn" id="showFormBtn">Add Form</button>
+
+    <form id="invoiceForm" method="POST">
+        {% csrf_token %}
+
+        <label>Customer Name:</label>
+        <input type="text" name="party_cb" required>
+
+        <label>PI Date:</label>
+        <input type="date" name="pi_date" required>
+
+        <label>PI No.:</label>
+        <input type="text" name="pi_no" required>
+
+        <label>Shipping Address:</label>
+        <input type="text" name="shipping_address" required>
+
+        <label>Billing Address:</label>
+        <input type="text" name="billing_address" required>
+
+        <label>District:</label>
+        <input type="text" name="district" required>
+
+        <label>State:</label>
+        <input type="text" name="state" required>
+
+        <label>Pincode:</label>
+        <input type="text" name="pincode" required>
+
+        <label>Billing Currency:</label>
+        <input type="text" name="billing_currency" required>
+
+        <label>Convert To Currency:</label>
+        <input type="text" name="convert_to_currency">
+
+        <label>Currency Rate:</label>
+        <input type="number" name="currency_rate" step="0.01">
+
+        <label>P.O. Date:</label>
+        <input type="date" name="po_date" required>
+
+        <label>P.O. No.:</label>
+        <input type="text" name="po_no" required>
+
+        <label>Normal Invoice:</label>
+        <input type="checkbox" name="normal_invoice">
+
+        <label>Export Invoice:</label>
+        <input type="checkbox" name="export_invoice">
+
+        <label>Item/Service Detail:</label>
+        <input type="text" name="item_service_detail">
+
+        <label>With Inventory:</label>
+        <input type="checkbox" name="with_inventory">
+
+        <label>Without Inventory:</label>
+        <input type="checkbox" name="without_inventory">
+
+        <label>Quantity:</label>
+        <input type="number" name="quantity" required>
+
+        <label>Tax Amount:</label>
+        <input type="number" name="tax_amount" step="0.01" required>
+
+        <label>Bill Discount:</label>
+        <input type="number" name="bill_discount" step="0.01">
+
+        <label>Organization Name:</label>
+        <input type="text" name="organization_name">
+
+        <label>Reference Type:</label>
+        <input type="text" name="reference_type">
+
+        <label>Reference By:</label>
+        <input type="text" name="reference_by">
+
+        <label>Remark:</label>
+        <input type="text" name="remark">
+
+        <label>Round Off:</label>
+        <input type="number" name="round_off" step="0.01">
+
+        <label>Total Bill Amount:</label>
+        <input type="number" name="total_bill_amount" step="0.01" required>
+
+        <label>Branch Code:</label>
+        <input type="text" name="branch_code" required>
+        
+        <label>Machine Serial Number:</label>
+        <input type="text" name="machine_serial_number" required>
+        
+        <label>Machine Type:</label>
+        <input type="text" name="machine_type" required>
+
+        <label>Model:</label>
+        <input type="text" name="model" required>
+
+        <label>Mobile Number:</label>
+        <input type="text" name="mobile_number" required>
+
+        <label>Email:</label>
+        <input type="text" name="email" required>
+
+        <button type="submit">Save Invoice</button>
+    </form>
+
+    <h2>Saved Invoices</h2>
+
+    <div class="table-container">
+        {% if data_list %}
+        <table>
+            <tr>
+                <th>Customer Name</th>
+                <th>Branch Code</th>
+                <th>Machine Serial Number</th>
+                <th>Machine Type</th>
+                <th>Model</th>
+                <th>PI Date</th>
+                <th>PI No.</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Reference By</th>
+            </tr>
+            {% for item in data_list %}
+            <tr>
+                <td>{{ item.party_cb }}</td>
+                <td>{{ item.branch_code }}</td>
+                <td>{{ item.machine_serial_number }}</td>
+                <td>{{ item.machine_type }}</td>
+                <td>{{ item.model }}</td>
+                <td>{{ item.pi_date }}</td>
+                <td>{{ item.pi_no }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>
+                    <select class="status-dropdown" data-pi-no="{{ item.pi_no }}" data-pi-date="{{ item.pi_date }}">
+                        <option value="Billed" {% if item.status == "Billed" %}selected{% endif %}>Billed</option>
+                        <option value="Unbilled" {% if item.status == "Unbilled" %}selected{% endif %}>Unbilled</option>
+                    </select>
+                </td>
+                <td>{{ item.reference_by }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p>No invoices found.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $("#showFormBtn").click(function() {
+                $("#invoiceForm").toggle();
+            });
+
+            $("#invoiceForm").submit(function() {
+                setTimeout(function() {
+                    $("#invoiceForm").hide();
+                }, 500);
+            });
+
+            $(".status-dropdown").change(function() {
+                var selectedStatus = $(this).val();
+                var piNo = $(this).data("pi-no");
+                var piDate = $(this).data("pi-date");
+
+                $.post("{% url 'update_status' %}", {
+                    "pi_no": piNo, "pi_date": piDate, "status": selectedStatus,
+                    "csrfmiddlewaretoken": "{{ csrf_token }}"
+                }, function(response) {
+                    alert(response.success ? "Status updated successfully!" : "Failed to update status.");
+                });
+            });
+        });
+    </script>
+</body>
+</html>

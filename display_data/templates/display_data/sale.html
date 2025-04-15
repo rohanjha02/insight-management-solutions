@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales</title>
+    {% load static %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: white;
+            color: black;
+            overflow-x: auto;
+        }
+        h1, h3, p {
+            text-align: center;
+        }
+        h1 a {
+            text-decoration: none;
+            color: white;
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .filter-container {
+            position: relative;
+            display: inline-block;
+        }
+        .filter-input {
+            width: 200px;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+        .dropdown-list {
+            position: absolute;
+            background: white;
+            border: 1px solid black;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            width: 100%;
+            z-index: 1000;
+        }
+        .dropdown-list div {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .dropdown-list div:hover {
+            background: #f0f0f0;
+        }
+        .amc-dropdown {
+            width: 100px;
+        }
+        .amc-amount {
+            width: 100px;
+        }
+        .remarks {
+            width: 100px;
+        }
+        select, button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        select {
+            background-color: white;
+            color: black;
+        }
+        button {
+            background-color: #0A1931;
+            color: white;
+            transition: 0.3s ease-in-out;
+        }
+        button:hover {
+            background-color: #185ADB;
+        }
+        a button {
+            background-color: #185ADB;
+            color: white;
+        }
+        a button:hover {
+            background-color: #0A1931;
+        }
+        .table-container {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        table {
+            width: 100%;
+            max-width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            color: black;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px 15px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        th {
+            background-color: #0A1931;
+            color: white;
+        }
+        input, select {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+         /* Back Button Styling */
+         .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: linear-gradient(45deg, navy, royalblue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(45deg, royalblue, navy);
+            transform: scale(1.05);
+        }
+        h1 img {
+            width: 100px;  /* Adjust the size as needed */
+            height: auto; /* Maintain aspect ratio */
+            vertical-align: middle; /* Align with text */
+            margin-right: 0px; /* Add spacing between logo and text */
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <a href="{% url 'insight_management_solutions' %}" class="back-btn">Back to Home</a>
+    <h1><img src="{% static 'logo1.png' %}" alt="Logo"><a href="{% url 'sale' %}" style="text-decoration: none; color: black;">Sales</h1></a>
+    <form method="get" action="">
+        <div class="filter-container">
+            <label for="branch_code">Filter by Branch Code:</label>
+            <input type="text" id="branch_code_input" class="filter-input" placeholder="Type to search...">
+            <div id="branch_code_dropdown" class="dropdown-list">
+                {% for branch_code in all_branch_codes %}
+                    <div data-value="{{ branch_code }}">{{ branch_code }}</div>
+                {% endfor %}
+            </div>
+            <input type="hidden" id="branch_code" name="branch_code">
+        </div>
+
+        <div class="filter-container">
+            <label for="customer_name">Filter by Customer Name:</label>
+            <input type="text" id="customer_name_input" class="filter-input" placeholder="Type to search...">
+            <div id="customer_name_dropdown" class="dropdown-list">
+                {% for customer in all_customers %}
+                    <div data-value="{{ customer }}">{{ customer }}</div>
+                {% endfor %}
+            </div>
+            <input type="hidden" id="customer_name" name="customer_name">
+        </div>
+
+
+        <button type="submit">Filter</button>
+
+        <a href="{% url 'download_csv' %}?customer={{ selected_customer }}&district={{ selected_district }}&branch_code={{ selected_branch_code }}&from_date={{ from_date }}&to_date={{ to_date }}">
+            <button type="button">Download as CSV</button>
+        </a>
+
+    </form>
+    <div style="overflow-x: auto;">
+        <table>
+            <tr>
+                <th>Customer Name</th>
+                <th>Branch Code</th>
+                <th>Machine Serial Number</th>
+                <th>Machine Type</th>
+                <th>Model</th>
+                <th>State</th>
+                <th>Pincode</th>
+                <th>District</th>
+                <th>Address</th>
+                <th>Mobile Number</th>
+                <th>Email</th>
+                <th>PI Date</th>
+                <th>PI No.</th>
+                <th>Quantity</th>
+                <th>Reference By</th>
+                <th>Warranty End Date</th>
+                <th>AMC</th>
+                <th>Frequency</th>
+                <th>AMC Due Date</th>
+                <th>AMC Amount</th>
+                <th>Remarks</th>
+                <th>Edit</th>
+            </tr>
+            {% if data_list %}
+                {% for item in data_list %}
+                <tr data-record-key="{{ item.record_key }}">
+                    <td>{{ item.party_cb }}</td>
+                    <td>{{ item.branch_code }}</td>
+                    <td>{{ item.machine_serial_number }}</td>
+                    <td>{{ item.machine_type }}</td>
+                    <td>{{ item.model }}</td>
+                    <td>{{ item.state }}</td>
+                    <td>{{ item.pincode }}</td>
+                    <td>{{ item.district }}</td>
+                    <td>{{ item.billing_address }}</td>
+                    <td>{{ item.mobile_number }}</td>
+                    <td>{{ item.email }}</td>
+                    <td>{{ item.pi_date }}</td>
+                    <td>{{ item.pi_no }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.reference_by }}</td>
+                    <td><input type="date" class="warranty-date" data-record-key="{{ item.record_key }}" value="{{ item.warranty_date }}"></td>
+                    <td>
+                        <select class="amc-dropdown" data-record-key="{{ item.record_key }}">
+                            <option value="Yes" {% if item.amc == "Yes" %}selected{% endif %}>Yes</option>
+                            <option value="No" {% if item.amc == "No" %}selected{% endif %}>No</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="frequency-dropdown" data-record-key="{{ item.record_key }}">
+                            <option value="Yearly" {% if item.frequency == "Yearly" %}selected{% endif %}>Yearly</option>
+                            <option value="Half-Yearly" {% if item.frequency == "Half-Yearly" %}selected{% endif %}>Half-Yearly</option>
+                        </select>
+                    </td>                    
+                    <td><input type="date" class="amc-due-date" data-record-key="{{ item.record_key }}" value="{{ item.amc_due_date }}"></td>
+                    <td><input type="number" class="amc-amount" data-record-key="{{ item.record_key }}" step="0.01" value="{{ item.amc_amount }}"></td>
+                    <td><input type="text" class="remarks" data-record-key="{{ item.record_key }}" value="{{ item.remarks }}"></td>
+                    <td>
+                        {% if item.record_key %}
+                            <a href="{% url 'edit_data' item.record_key %}">
+                                <button>Edit</button>
+                            </a>
+                        {% else %}
+                            <button disabled>No Key</button>
+                        {% endif %}
+                    </td>                    
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="19" style="text-align: center;">No Billed Pro Forma Invoices Found</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            function setupDropdown(inputId, dropdownId, hiddenInputId) {
+                let $input = $("#" + inputId);
+                let $dropdown = $("#" + dropdownId);
+                let $hiddenInput = $("#" + hiddenInputId);
+
+                // Show dropdown when input is focused
+                $input.on("focus", function() {
+                    $dropdown.show();
+                });
+
+                // Filter dropdown when typing
+                $input.on("input", function() {
+                    let searchText = $input.val().toLowerCase();
+                    $dropdown.show(); // Ensure dropdown is visible when typing
+                    $dropdown.children("div").each(function() {
+                        let text = $(this).text().toLowerCase();
+                        $(this).toggle(text.includes(searchText));
+                    });
+                });
+
+                // Select dropdown item
+                $dropdown.on("click", "div", function() {
+                    let value = $(this).attr("data-value");
+                    $input.val(value);
+                    $hiddenInput.val(value);
+                    $dropdown.hide();
+                });
+
+                // Hide dropdown when clicking outside
+                $(document).on("click", function(event) {
+                    if (!$(event.target).closest(".filter-container").length) {
+                        $dropdown.hide();
+                    }
+                });
+            }
+
+            setupDropdown("branch_code_input", "branch_code_dropdown", "branch_code");
+            setupDropdown("customer_name_input", "customer_name_dropdown", "customer_name");
+        });
+
+
+        $(document).ready(function() {
+            function updateFieldsBasedOnWarranty() {
+                $(".warranty-date").each(function() {
+                    var recordKey = $(this).data("record-key");
+                    var warrantyDate = new Date($(this).val());
+                    var currentDate = new Date();
+
+                    var $amcDropdown = $(".amc-dropdown[data-record-key='" + recordKey + "']");
+                    var $frequency = $(".frequency-dropdown[data-record-key='" + recordKey + "']");
+                    var $amcDueDate = $(".amc-due-date[data-record-key='" + recordKey + "']");
+                    var $amcAmount = $(".amc-amount[data-record-key='" + recordKey + "']");
+                    var $remarks = $(".remarks[data-record-key='" + recordKey + "']");
+
+                    if (!$(this).val()) {
+                    // If no warranty date is selected, disable and clear fields
+                    $amcDropdown.prop("disabled", false);
+                    $frequency.prop("disabled", false);
+                    $amcDueDate.prop("disabled", false);
+                    $amcAmount.prop("disabled", false);
+                    $remarks.prop("disabled", false);
+                } else if (warrantyDate > currentDate) {
+                    // If warranty date is in future, disable fields
+                    $amcDropdown.val("No").prop("disabled", true);
+                    $frequency.val("").prop("disabled", true);
+                    $amcDueDate.val("").prop("disabled", true);
+                    $amcAmount.val("").prop("disabled", true);
+                    $remarks.val("").prop("disabled", true);
+                } else {
+                    // If warranty date is in the past, enable fields
+                    $amcDropdown.prop("disabled", false);
+                    $frequency.prop("disabled", false);
+                    $amcDueDate.prop("disabled", false);
+                    $amcAmount.prop("disabled", false);
+                    $remarks.prop("disabled", false);
+                    }
+                });
+            }
+            updateFieldsBasedOnWarranty();
+            
+            $(".warranty-date, .amc-dropdown, .frequency-dropdown, .amc-due-date, .amc-amount, .remarks").change(function() {
+                var recordKey = $(this).data("record-key");
+                var warrantyDate = $(".warranty-date[data-record-key='" + recordKey + "']").val();
+                var amc = $(".amc-dropdown[data-record-key='" + recordKey + "']").val();
+                var frequency = $(".frequency-dropdown[data-record-key='" + recordKey + "']").val();
+                var amcDueDate = $(".amc-due-date[data-record-key='" + recordKey + "']").val();
+                var amcAmount = $(".amc-amount[data-record-key='" + recordKey + "']").val();
+                var remarks = $(".remarks[data-record-key='" + recordKey + "']").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'update_amc_details' %}",
+                    data: JSON.stringify({
+                        "record_key": recordKey,
+                        "warranty_date": warrantyDate,
+                        "amc": amc,
+                        "frequency": frequency,
+                        "amc_due_date": amcDueDate,
+                        "amc_amount": amcAmount,
+                        "remarks": remarks
+                    }),
+                    contentType: "application/json",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    success: function(response) {
+                        updateFieldsBasedOnWarranty();
+                        alert("Details updated successfully!");
+                    },
+                    error: function(xhr) {
+                        alert("Failed to update details. Error: " + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

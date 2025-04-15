@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agreement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: justify;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .agreement-content {
+            margin-top: 20px;
+        }
+        .signature {
+            text-align: right;
+            margin-top: 50px;
+        }
+        .print-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+        @media print {
+            .print-button {
+                display: none; /* Hide the Print button when printing */
+            }
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                width: 100%;
+                padding: 0;
+            }
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .terms-section {
+            margin-top: 20px;
+        }
+        .terms-section h3 {
+            margin-bottom: 10px;
+        }
+        p {
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Logo at the top -->
+        <div class="logo">
+            <img src="/static/logo1.png" alt="Company Logo" width="150px">
+        </div>
+
+        <h2 style="text-align: center;">SERVICE LEVEL AGREEMENT (SLA) </h2>
+
+        <div class="agreement-content">
+            <p style="text-align: center;"><strong></strong> {{ reason }}</p>
+            <p><strong>Bank Name:</strong> {{ bank_name }}</p>
+            <p><strong>Model:</strong> {{ model }}</p>
+            <p><strong>AMC Start Date:</strong> {{ amc_start_date }}</p>
+            <p><strong>AMC End Date:</strong> {{ amc_end_date }}</p>
+            <p><strong>AMC Amount:</strong> {{ amc_amount }}</p>
+
+            <hr>
+
+            <h3>Terms and Conditions:</h3>
+
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>Condition</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>IMS will conduct four (4) periodical service visits for preventive and corrective maintenance wherein the equipment will be thoroughly checked, cleaned and tested. IMS will provide such periodical service as a preventive maintenance (PM) during the period of AMC.</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>IMS will also attend breakdown calls or emergency attention calls upon request from the customer. Once the call has been logged by the CSS department, it will be attended to within 48 hours. However, if there is a major fault, such as software issues or the need for additional spare parts or hardware, additional time may be required for resolution.</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>For attending to the complaints and preventive maintenance, the engineers of the supplier only will have to be deputed and the supplier shall not engage any other local mechanics or other companies. IMS has the reserve right to take escalation support from OEM.</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>During the validity of the AMC, the supplier shall ensure the replacement of any spare part free of cost, except glass material within the machine.</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>The supplier shall not claim any additional overheads, travel expenses, or boarding and lodging costs for engineers or workmen, except for services specifically requested during weekends, holidays, strikes, non-working hours, or any additional services beyond the standard scope of compliance.</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Repair of parts will be done free of charge wherever possible in comprehensive AMC. However, replacement of part or parts due to physical damage arising out of mishandling or any other special unavoidable circumstances, unavailability during emergencies, pandemic, etc., shall be carried out on a chargeable basis by IMS and for this, the Bill/Invoice will be submitted separately.</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>If the machine cannot be made serviceable either by repair or by replacement and put back into regular operation within 30 working days, a penalty at the rate of ₹2000 per day for the first three days and ₹5000 per day beyond the first three days will be imposed and deducted from payment of the vendor. 
+                        <br><br>a. On the contrary, user shall also pay the same penalty amount in the case of 
+                            non-payment of AMC amount on the due date. 
+                        <br>b. After completion of 30 days of expiration of AMC, rejuvenation charges have 
+                            to be paid by the user which ranges from 30 % to 100 % of the machine cost 
+                            depending on the heath and condition of the machine.
+                    </td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>In the case of comprehensive AMC, some major parts of glass made (i.e., CIS or/and software of INR (Existing or New Inducted)) shall be charged extra.</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>IMS will carry out attending to Periodical servicing/Breakdown calls during the normal working days and hours, i.e., Monday to Friday between 10:30 hrs to 17:30 hrs. For any emergency or breakdown calls on Saturdays (2nd & 4th), Sundays, or Holidays or non-working hours, the customer shall have to pay INR 4500 (Urban), INR 5500 (Semi-Urban), INR 6500 (Rural), plus applicable taxes.</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>Electrical work external to the equipment or maintenance of accessories, attachments or equipment are not covered under these terms and conditions and that shall be chargeable at actual.</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>Breakdown attention visits, repairs, and replacement in the event of malfunction or damage caused under the following circumstances are not covered under these terms and conditions:</td>
+                </tr>
+                <tr>
+                    <td>11.1</td>
+                    <td>Due to incorrect operation or handling, abnormal usage or misuse, use of substandard consumables or accessories, or service/repairs carried out by any source other than the authorized representative or service provider.</td>
+                </tr>
+                <tr>
+                    <td>11.2</td>
+                    <td>Brought about by external circumstances, such as, rat cut, water, short circuit, fire, generator power supply, riots, accidents, or environmental conditions/natural calamities or act of GOD etc.</td>
+                </tr>
+                <tr>
+                    <td>11.3</td>
+                    <td>Damage caused by rodents & data loss due to virus.</td>
+                </tr>
+                <tr>
+                    <td>11.4</td>
+                    <td>Consumables, accessories, external attachments, external display unit, and any missing part/s are not covered under this AMC.</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>In the event of major breakdown or overhauling under the non-contract, 
+                        requiring the equipment to be carried to the Service Providers’ Service Centre 
+                        because of reasons mentioned under Sr. no 6, the Customer shall bear/pay all </td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>costs pertaining to Labour, Handling, Packing, Forwarding, Insurance, 
+                        Transportation and Statutory Levies or other associated cost/s, if any.</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>The equipment/s should be made available for servicing as and when an 
+                        authorized engineer calls on his periodical preventive maintenance visit. Any 
+                        additional preventive maintenance other than the number specified in Sr. no 1 
+                        will be payable extra at Rs.4500.00 / Rs.5500.00 / Rs.6500.00 for Urban/Semi 
+                        Urban/Rural respectively per call plus taxes under non-AMC.</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>Any statutory levies / taxes imposed by the central / state govt. at any time 
+                        prospectively or retrospectively, it is understood and agreed that such incident 
+                        will be payable extra at actual. </td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>100% of all invoices/service charges are payable in advance. Also, after the 
+                        completion of 30 days, rejuvenation charges have to be paid by the user.</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>If the machine is not under AMC, then the rejuvenation charges and repair cost 
+                        of the machine will be applicable before entering into AMC. The quote for the 
+                        same will be sent separately.</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>IMS shall not be liable for any damages or loss, direct or indirect, or any 
+                        consequential liability whatsoever to any person or property as result of 
+                        equipment operation or breakdown or accident or fire or any such 
+                        circumstances beyond the control of IMS. </td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td>Equipment or part thereof shall not be relocated except by the representative 
+                        or IMS or with its written consent. However, any relocation / reinstallation shall 
+                        be payable as extra.</td>
+                </tr>
+                <tr>
+                    <td>20</td>
+                    <td>In the event of any default of any terms and conditions, IMS may decline to 
+                        perform any further maintenance and service.</td>
+                </tr>
+                <tr>
+                    <td>21</td>
+                    <td>IMS shall not be liable or responsible for failure to render service due to causes 
+                        beyond its control, including but not limited to work stoppages, civil 
+                        disobedience / unrest, strike, riots, war, fire, floods, act of GOD or any similar 
+                        occurrences.</td>
+                </tr>
+                <tr>
+                    <td>22</td>
+                    <td>IMS may stop rendering services in case OEM discontinue / obsolete the model 
+                        or unavailability of spare parts, after 5 years from the date of installation.</td>
+                </tr>
+                <tr>
+                    <td>23</td>
+                    <td>If any third-party intervention occurs, the contract will be void. Additionally, if 
+                        services are obtained from any other party, the contract will also be void, and 
+                        the AMC payment for the remaining period will not be reimbursed. </td>
+                </tr>
+                <tr>
+                    <td>24</td>
+                    <td>All complaints should be logged in by email at css.imsworld@gmail.com  or 
+                        through our customer care no +91 9205600567/ 0129-4086555.</td>
+                </tr>
+                <tr>
+                    <td>25</td>
+                    <td>Complaint escalation matrix with time period:
+                        <img src="/static/25.png" alt="25th" width="80%" height="80%"><br>
+                        This Service Level Agreement has been conducted between the service provider  
+                        called Insight Management Solutions and the customer mentioned in the Proforma 
+                        Invoice, which is mutually agreed on above terms and signed as below.<br><br>
+                        <img src="/static/27.png" alt="25th" width="80%" height="80%">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Print Button -->
+        <div class="print-button">
+            <a href="{% url 'agreement_form' %}"><button>Back</button></a>
+            <button onclick="window.print()">Print Agreement</button>
+        </div>
+    </div>
+
+</body>
+</html>

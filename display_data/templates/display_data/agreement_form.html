@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agreement Forms</title>
+    
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+
+    <style>
+        /* Page Styling */
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Center the Form */
+        .container {
+            max-width: 500px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Form Header */
+        .form-header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(45deg, navy, royalblue);
+            color: white;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            margin: -20px -20px 15px -20px;
+        }
+
+        /* Input Fields */
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 8px;
+        }
+
+        /* Submit Button */
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 5px;
+            background-color: navy;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: royalblue;
+        }
+
+         /* Back Button Styling */
+         .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: linear-gradient(45deg, navy, royalblue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(45deg, royalblue, navy);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'insight_management_solutions' %}" class="back-btn">Back to Home</a>
+
+    <div class="container">
+        <div class="form-header">Agreement Form</div>
+
+        <form action="{% url 'agreement' %}" method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="reason" class="form-label">Reason:</label>
+                <input type="text" id="reason" name="reason" class="form-control" placeholder="Enter reason" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="bank_name" class="form-label">Bank Name:</label>
+                <input type="text" id="bank_name" name="bank_name" class="form-control" placeholder="Enter bank name" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="model" class="form-label">Model:</label>
+                <input type="text" id="model" name="model" class="form-control" placeholder="Enter model" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="amc_start_date" class="form-label">AMC Start Date:</label>
+                <input type="date" id="amc_start_date" name="amc_start_date" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="amc_end_date" class="form-label">AMC End Date:</label>
+                <input type="date" id="amc_end_date" name="amc_end_date" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="amc_amount" class="form-label">AMC Amount:</label>
+                <input type="text" id="amc_amount" name="amc_amount" class="form-control" placeholder="Enter amount" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

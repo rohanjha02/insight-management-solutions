@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Complaints</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    
+    {% load static %}  <!-- Load static files -->
+
+    <style>
+        /* Navbar Styling */
+        .navbar {
+            background-color: #007bff;
+            padding: 15px;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-bottom: 15px;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            height: 100px;
+            margin-right: 10px;
+        }
+
+        .navbar-nav {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            padding: 5px 0;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: lightgray !important;
+            text-decoration: underline;
+        }
+
+        /* Body Styling */
+        body {
+            background-color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Buttons */
+        .view-button, button {
+            background: linear-gradient(45deg, navy, royalblue);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            text-align: center;
+            display: inline-block;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .view-button:hover, button:hover {
+            background: linear-gradient(45deg, royalblue, navy);
+        }
+
+        /* Select Dropdown */
+        select {
+            padding: 8px;
+            margin-left: 10px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+        }
+
+        /* Headings */
+        h1, h2 {
+            color: #007bff;
+        }
+
+        .button-container {
+            margin-bottom: 20px;
+        }
+        h1 img {
+            width: 100px;  /* Adjust the size as needed */
+            height: auto; /* Maintain aspect ratio */
+            vertical-align: middle; /* Align with text */
+            margin-right: 5px; /* Add spacing between logo and text */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="button-container">
+        <a href="{% url 'insight_management_solutions' %}">
+            <button>Back to Home</button>
+        </a>
+    </div>
+
+    <h1><img src="{% static 'logo1.png' %}" alt="Logo"><a href="{% url 'user_complaints' %}" style="text-decoration: none; color: #007bff;">User Complaints</a></h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Branch Code</th>
+                <th>Complaint Description</th>
+                <th>Email</th>
+                <th>Machine Type</th>
+                <th>Mobile Number</th>
+                <th>State</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if pending_complaints %}
+                {% for user in pending_complaints %}
+                    <tr>
+                        <td>{{ user.branch_code }}</td>
+                        <td>{{ user.complaint_description }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.machine_type }}</td>
+                        <td>{{ user.mobile_number }}</td>
+                        <td>{{ user.state }}</td>
+                        <td>
+                            <form method="GET" action="{% url 'view_complaint_details' %}">
+                                <input type="hidden" name="branch" value="{{ user.branch }}">
+                                <input type="hidden" name="branch_code" value="{{ user.branch_code }}">
+                                <input type="hidden" name="branch_name" value="{{ user.branch_name }}">
+                                <input type="hidden" name="complaint_description" value="{{ user.complaint_description }}">
+                                <input type="hidden" name="email" value="{{ user.email }}">
+                                <input type="hidden" name="machine_type" value="{{ user.machine_type }}">
+                                <input type="hidden" name="mobile_number" value="{{ user.mobile_number }}">
+                                <input type="hidden" name="state" value="{{ user.state }}">
+                                <input type="hidden" name="engineer_name" value="{{ user.assigned_engineer.name }}">
+                                <input type="hidden" name="remarks" value="{{ user.remarks }}">
+                                <button type="submit" class="view-button">View</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="9">No pending complaints found.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <!-- Month Selection Form -->
+    <form method="GET" onsubmit="return validateSelection()">
+        <label for="month">Select Month:</label>
+        <select name="month" id="month" onchange="this.form.submit()">
+            <option value="">--Select Month--</option>
+            {% for num, month in months %}
+                <option value="{{ num }}" {% if selected_month == num %}selected{% endif %}>{{ month }}</option>
+            {% endfor %}
+        </select>
+
+        {% if selected_month %}
+        <label for="engineer">Select Engineer:</label>
+        <select name="engineer" id="engineer" onchange="this.form.submit()">
+            <option value="">--Select Engineer--</option>
+            {% for engineer in engineers %}
+                <option value="{{ engineer }}" {% if selected_engineer == engineer %}selected{% endif %}>{{ engineer }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+    </form>
+
+    <h2>Resolved Complaints</h2>
+
+    {% if resolved_complaints %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Branch Code</th>
+                    <th>Complaint Description</th>
+                    <th>Email</th>
+                    <th>Machine Type</th>
+                    <th>Mobile Number</th>
+                    <th>State</th>
+                    <th>Complaint Issue Date</th>
+                    <th>Engineer Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in resolved_complaints %}
+                    <tr>
+                        <td>{{ user.branch_code }}</td>
+                        <td>{{ user.complaint_description }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.machine_type }}</td>
+                        <td>{{ user.mobile_number }}</td>
+                        <td>{{ user.state }}</td>
+                        <td>{{ user.createdAt }}</td>
+                        <td>{{ user.assigned_engineer.name }}</td>
+                        <td>
+                            <form method="GET" action="{% url 'view_complaint_details' %}">
+                                <input type="hidden" name="branch" value="{{ user.branch }}">
+                                <input type="hidden" name="branch_code" value="{{ user.branch_code }}">
+                                <input type="hidden" name="branch_name" value="{{ user.branch_name }}">
+                                <input type="hidden" name="complaint_description" value="{{ user.complaint_description }}">
+                                <input type="hidden" name="email" value="{{ user.email }}">
+                                <input type="hidden" name="machine_type" value="{{ user.machine_type }}">
+                                <input type="hidden" name="mobile_number" value="{{ user.mobile_number }}">
+                                <button type="submit" class="view-button">View</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No complaints found for the selected month and engineer.</p>
+    {% endif %}
+</body>
+</html>

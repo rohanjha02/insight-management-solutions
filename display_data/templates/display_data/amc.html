@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upcoming AMC</title>
+    {% load static %}
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: white; /* Navy Blue to Royal Blue */
+            color: black;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1 {
+            margin-top: 20px;
+        }
+
+        /* Form Styles */
+        form {
+            margin: 20px 0;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        select {
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        /* Table Styles */
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            color: black;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: linear-gradient(135deg, #001F3F, #0074D9); /* Gradient Header */
+            color: white;
+        }
+
+        /* Dropdown Styles */
+        select[name="remarks"] {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #0074D9;
+        }
+
+        /* Hover Effects */
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        /* Button Styles */
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: linear-gradient(45deg, navy, royalblue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(45deg, royalblue, navy);
+            transform: scale(1.05);
+        }
+        h1 img {
+            width: 100px;  /* Adjust the size as needed */
+            height: auto; /* Maintain aspect ratio */
+            vertical-align: middle; /* Align with text */
+            margin-right: 5px; /* Add spacing between logo and text */
+        }
+    </style>
+    <script>
+        function updateRemarks(recordKey, selectElement) {
+            let newRemarks = selectElement.value;
+            let billNo = null;
+            let utrNo = null;
+    
+            if (newRemarks === "Paid") {
+                billNo = prompt("Enter Bill Number:");
+                if (!billNo) {
+                    alert("Bill number is required for Paid remarks.");
+                    selectElement.value = ""; // Reset the dropdown
+                    return;
+                }
+    
+                utrNo = prompt("Enter UTR Number:");
+                if (!utrNo) {
+                    alert("UTR number is required for Paid remarks.");
+                    selectElement.value = ""; // Reset the dropdown
+                    return;
+                }
+            }
+    
+            fetch("{% url 'update_amc_remarks' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    "record_key": recordKey,
+                    "remarks": newRemarks,
+                    "bill_no": billNo,
+                    "utr_no": utrNo
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Remarks updated successfully");
+                } else {
+                    alert("Error updating remarks: " + data.error);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</head>
+<body>
+     <!-- Back Button -->
+    <a href="{% url 'insight_management_solutions' %}" class="back-btn">Back to Home</a>
+    <h1><img src="{% static 'logo1.png' %}" alt="Logo">Upcoming AMC</h1>
+    <!-- Month Selection Dropdown -->
+    <form method="GET" action="">
+        <label for="month">Select Month:</label>
+        <select name="month" id="month" onchange="this.form.submit()">
+            <option value="" {% if not selected_month %}selected{% endif %}>Select a Month</option>
+            {% for month in all_months %}
+                <option value="{{ month }}" {% if selected_month == month %}selected{% endif %}>
+                    {{ month }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+    {% if selected_month and selected_amc_records %}
+        <table>
+            <thead>
+                <tr>
+                    <th>AMC Amount</th>
+                    <th>AMC Due Date</th>
+                    <th>Bank Name</th>
+                    <th>Branch Code</th>
+                    <th>Machine Serial Number</th>
+                    <th>Machine Type</th>
+                    <th>Billing Address</th>
+                    <th>Billing Currency</th>
+                    <th>Frequency</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in selected_amc_records %}
+                <tr>
+                    <td>{{ record.amc_amount }}</td>
+                    <td>{{ record.amc_due_date|date:"d-m-Y" }}</td>
+                    <td>{{ record.party_cb }}</td>
+                    <td>{{ record.branch_code }}</td>
+                    <td>{{ record.machine_serial_number }}</td>
+                    <td>{{ record.machine_type }}</td>
+                    <td>{{ record.billing_address }}</td>
+                    <td>{{ record.billing_currency }}</td>
+                    <td>{{ record.frequency }}</td>
+                    <td>
+                        <select name="remark" onchange="updateRemarks('{{ record.record_key }}', this)">
+                            <option value="" {% if not record.remarks %}selected{% endif %}>-- Select --</option>
+                            <option value="Paid" {% if record.remarks == "Paid" %}selected{% endif %}>Paid</option>
+                            <option value="Unpaid" {% if record.remarks == "Unpaid" %}selected{% endif %}>Unpaid</option>
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif selected_month %}
+        <p>No AMC records found for the selected month.</p>
+    {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,1 @@
+web: gunicorn firebase_project.wsgi:application

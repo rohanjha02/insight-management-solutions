@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>y
+    {% load static %} <!-- Load the static files -->
+
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: white; /* Navy Blue to Royal Blue */
+            margin: 0;
+            padding: 0;
+            color: black;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container {
+            padding: 1%;
+        }
+        .button-container button {
+            background-color: #2563eb; /* Royal Blue */
+            border: none;
+            padding: 10px 15px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        .button-container button:hover {
+            background-color: #1e3a8a; /* Dark Navy Blue */
+        }
+
+        /* Product Container */
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+        .product {
+            background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent */
+            border-radius: 10px;
+            margin: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 320px;
+            height: 370px;
+            text-align: center;
+            padding: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .product:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 255, 255, 0.15); /* Lighter on hover */
+        }
+        .product-name {
+            font-size: 18px;
+            color: #000000;
+            font-weight: bold;
+        }
+        .product-description {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #000000; /* Light gray text */
+        }
+        .product-price {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #000000;
+            font-weight: bold;
+        }
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        /* Floating Plus Button */
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #2563eb; /* Emerald Green */
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+        }
+        .floating-btn:hover {
+            background-color: #2155c6; /* Darker Green */
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            text-align: center;
+            color: black;
+        }
+        .modal input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .modal button {
+            background-color: #2563eb; /* Royal Blue */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .modal button:hover {
+            background-color: #1e3a8a; /* Dark Navy Blue */
+        }
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: black;
+        }
+
+         /* Back Button Styling */
+         .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: linear-gradient(45deg, navy, royalblue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(45deg, royalblue, navy);
+            transform: scale(1.05);
+        }
+        h1 img {
+            width: 100px;  /* Adjust the size as needed */
+            height: auto; /* Maintain aspect ratio */
+            vertical-align: middle; /* Align with text */
+            margin-right: 5px; /* Add spacing between logo and text */
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'insight_management_solutions' %}" class="back-btn">Back to Home</a>
+    <h1><img src="{% static 'logo1.png' %}" alt="Logo">Product Details</h1>
+
+    <div id="product-container" class="product-container">
+        {% for product in products %}
+        <div class="product">
+            <img class="product-image" src="{{ product.image }}" alt="{{ product.name }} Image">
+            <p class="product-name">{{ product.name }}</p>
+            <p class="product-description">{{ product.description }}</p>
+            <p class="product-price">${{ product.price }}</p>
+        </div>
+        {% empty %}
+        <p>No products available.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Floating Plus Button -->
+    <button class="floating-btn" onclick="openModal()">+</button>
+
+    <!-- Modal for Adding Product -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Add New Product</h2>
+            <input type="text" id="productName" placeholder="Product Name">
+            <input type="text" id="productDescription" placeholder="Description">
+            <input type="number" id="productPrice" placeholder="Price">
+            <input type="text" id="productImage" placeholder="Image URL">
+            <button onclick="addProduct()">Add Product</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById("addProductModal").style.display = "block";
+        }
+        function closeModal() {
+            document.getElementById("addProductModal").style.display = "none";
+        }
+
+        function addProduct() {
+            let name = document.getElementById("productName").value;
+            let description = document.getElementById("productDescription").value;
+            let price = document.getElementById("productPrice").value;
+            let image = document.getElementById("productImage").value;
+
+            if (name === "" || description === "" || price === "" || image === "") {
+                alert("All fields are required!");
+                return;
+            }
+
+            fetch("/add_product/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+                body: JSON.stringify({ name, description, price, image })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert("Product added successfully!");
+                    closeModal();
+                    loadProducts();
+                } else {
+                    alert("Failed to add product");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function getCSRFToken() {
+            let cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+            return cookie ? cookie.split('=')[1] : "";
+        }
+
+        function loadProducts() {
+            fetch("/get_products/")
+            .then(response => response.json())
+            .then(data => { /* Refresh product list */ })
+            .catch(error => console.error("Error:", error));
+        }
+
+        loadProducts();
+    </script>
+
+</body>
+</html>

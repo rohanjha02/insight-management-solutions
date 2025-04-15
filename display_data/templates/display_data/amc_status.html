@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMC Status</title>
+    {% load static %}
+    <style>
+        /* Background Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: white;
+            color: rgb(0, 0, 0);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        /* ===========================
+        Unified Filter Styling
+        =========================== */
+
+        /* ===========================
+        Labels
+        =========================== */
+
+        .filter-container label {
+            font-weight: 600;
+            color: #444;
+            font-size: 14px;
+            display: block;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        /* ===========================
+        Input Fields & Select Dropdowns
+        =========================== */
+        .filter-container {
+            display: flex;
+            flex-direction: column; /* Keeps filters grouped */
+            align-items: center;
+            justify-content: center;
+            gap: 30px; /* Space between groups */
+            background: linear-gradient(135deg, #ffffff, #f8f8f8);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 2px 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Keeps "Select AMC Status" in one row */
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* Increases spacing between elements */
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Ensures Branch Code and Customer Name are in one line */
+        .inline-filters {
+            display: flex;
+            gap: 20px; /* Adds space between the two input fields */
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .inline-filters input {
+            flex: 1;
+            min-width: 200px; /* Adjusts input field width */
+        }
+
+
+        select,
+        input {
+            width: auto; /* Allow flexible width */
+            min-width: 150px;
+            padding: 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            background: white;
+            color: #333;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+        }
+
+        select:hover,
+        input:hover {
+            border-color: royalblue;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: royalblue;
+            box-shadow: 0 0 8px rgba(65, 105, 225, 0.5);
+        }
+
+        /* ===========================
+        Filter Button
+        =========================== */
+
+        .filter-button {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, royalblue, navy);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            width: 260px;
+            text-align: center;
+        }
+
+        /* Extra padding below the button when UTR No is asked */
+        .utr-required + .filter-button {
+            margin-bottom: 20px;
+        }
+
+        .filter-button:hover {
+            background: linear-gradient(135deg, navy, royalblue);
+            transform: scale(1.05);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .filter-button:active {
+            transform: scale(0.98);
+        }
+
+        /* ===========================
+        Hidden Elements
+        =========================== */
+
+        .hidden {
+            display: none;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            color: black;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: royalblue;
+            color: white;
+        }
+
+        /* Dropdown Styling */
+        select {
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 20px;
+            cursor: pointer;
+            background: white;
+            color: black;
+        }
+
+        select:focus {
+            outline: 2px solid royalblue;
+        }
+
+        /* Overdue Alert Styling */
+        .overdue-alert {
+            color: red;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .paid-btn {
+            background-color: royalblue;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: block;
+            margin-top: 5px;
+        }
+        .paid-btn:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+
+         /* Back Button Styling */
+         .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: linear-gradient(45deg, navy, royalblue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(45deg, royalblue, navy);
+            transform: scale(1.05);
+        }
+        h1 img {
+            width: 100px;  /* Adjust the size as needed */
+            height: auto; /* Maintain aspect ratio */
+            vertical-align: middle; /* Align with text */
+            margin-right: 5px; /* Add spacing between logo and text */
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        function filterAMC() {
+            let selectedStatus = document.getElementById("remarksFilter").value;
+            let utrFilterDiv = document.getElementById("utrFilterDiv");
+            
+            if (selectedStatus === "Paid") {
+                utrFilterDiv.classList.remove("hidden");
+            } else {
+                utrFilterDiv.classList.add("hidden");
+            }
+        }
+        function applyFilters() {
+            let selectedStatus = document.getElementById("remarksFilter").value;
+            let utrNo = document.getElementById("utrFilter").value.trim();
+            let branchCode = document.getElementById("branchCode").value.trim();
+            let customerName = document.getElementById("customerName").value.trim();
+            
+            let urlParams = new URLSearchParams(window.location.search);
+            if (selectedStatus) urlParams.set("remarks", selectedStatus);
+            else urlParams.delete("remarks");
+            if (selectedStatus === "Paid" && utrNo) urlParams.set("utr_no", utrNo);
+            else urlParams.delete("utr_no");
+            if (branchCode) urlParams.set("branch_code", branchCode);
+            else urlParams.delete("branch_code");
+            if (customerName) urlParams.set("customer_name", customerName);
+            else urlParams.delete("customer_name");
+            
+            window.location.search = urlParams.toString();
+        }
+        
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let rows = document.querySelectorAll("tr[data-upcoming-date]");
+            let today = new Date();
+
+            rows.forEach(row => {
+                let upcomingDate = new Date(row.getAttribute("data-upcoming-date"));
+                let remarks = row.getAttribute("data-remarks");
+                let remarksCell = row.querySelector(".remarks-cell");
+                let dateOfPaymentCell = row.querySelector(".date-of-payment-cell");
+                let billNoCell = row.querySelector(".bill-no-cell");
+                let overdueDays = Math.floor((today - upcomingDate) / (1000 * 60 * 60 * 24));
+
+                if (remarks === "Unpaid") {
+                    let button = document.createElement("button");
+                    button.className = "paid-btn";
+                    button.textContent = "Mark as Paid";
+                    button.onclick = function () {
+                        markAsPaid(row.getAttribute("data-key"), dateOfPaymentCell, billNoCell, row);
+                    };
+                    remarksCell.appendChild(button);
+
+                    if (overdueDays > 0) {
+                        let alertMessage = document.createElement("div");
+                        alertMessage.className = "overdue-alert";
+                        alertMessage.textContent = "Overdue by " + overdueDays + " days";
+                        remarksCell.appendChild(alertMessage);
+                    }
+                }
+            });
+        });
+
+        function markAsPaid(recordKey, dateOfPaymentCell, billNoCell, row) {
+            let billNo = prompt("Enter Bill No:");
+            let utrNo = prompt("Enter UTR No:");
+            if (!billNo || !utrNo) {
+                alert("Bill No and UTR No are required to mark as Paid.");
+                return;
+            }
+            let currentDate = new Date().toISOString().split("T")[0];
+
+            fetch("/update_amc_status/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify({
+                    key: recordKey,
+                    date_of_payment: currentDate,
+                    bill_no: billNo,
+                    utr_no: utrNo,
+                    remarks: "Paid"
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("AMC status updated to Paid!");
+                    dateOfPaymentCell.textContent = currentDate;
+                    billNoCell.textContent = billNo;
+                    row.setAttribute("data-remarks", "Paid");
+                    row.querySelector(".remarks-cell").textContent = "Paid";
+                } else {
+                    alert("Error updating AMC status.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                let cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</head>
+<body>
+    <a href="{% url 'insight_management_solutions' %}" class="back-btn">Back to Home</a>
+    <div class="filter-container">
+        <h1><a href="{% url 'amc_status' %}" style="text-decoration: none; color: black;">AMC Status</h1></a>
+        
+        <form method="get" action="{% url 'amc_status' %}">
+            <div class="filter-container">
+                <div class="filter-row">
+                    <label for="remarks">AMC Status</label>
+                    <select name="remarks" id="remarks" required>
+                        <option value="" selected>All</option>
+                        <option value="paid" {% if selected_remarks == "paid" %}selected{% endif %}>Paid</option>
+                        <option value="unpaid" {% if selected_remarks == "unpaid" %}selected{% endif %}>Unpaid</option>
+                    </select>
+                </div>
+    
+                <div class="inline-filters">
+                    <div>
+                        <label for="branch_code">Branch Code</label>
+                        <select name="branch_code" id="branch_code">
+                            <option value="">All</option>
+                            {% for code in all_branch_codes %}
+                                <option value="{{ code }}" {% if selected_branch_code == code %}selected{% endif %}>{{ code }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+    
+                    <div>
+                        <label for="customer_name">Customer Name</label>
+                        <select name="customer_name" id="customer_name">
+                            <option value="">All</option>
+                            {% for name in all_customers %}
+                                <option value="{{ name }}" {% if selected_customer_name == name %}selected{% endif %}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+    
+                <div>
+                    <label for="filter_type">Filter Type</label>
+                    <select name="filter_type" id="filter_type">
+                        <option value="and" {% if filter_type == "and" %}selected{% endif %}>AND</option>
+                        <option value="or" {% if filter_type == "or" %}selected{% endif %}>OR</option>
+                    </select>
+                </div>
+    
+                <button class="filter-button" type="submit">Apply Filters</button>
+            </div>
+        </form>
+
+        {% if selected_remarks and amc_records %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>AMC Amount</th>
+                <th>Upcoming AMC Date</th>
+                <th>Bank Name</th>
+                <th>Branch Code</th>
+                <th>Machine Serial Number</th>
+                <th>Machine Type</th>
+                <th>Billing Address</th>
+                <th>Frequency</th>
+                <th>Remarks</th>
+                <th>Date of Payment</th>
+                <th>Bill No</th>
+                <th>UTR No</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in amc_records %}
+            <tr data-upcoming-date="{{ record.amc_due_date }}" data-remarks="{{ record.remarks }}" data-key="{{ record.key }}">
+                <td>{{ record.amc_amount }}</td>
+                <td>{{ record.amc_due_date }}</td>
+                <td>{{ record.party_cb }}</td>
+                <td>{{ record.branch_code }}</td>
+                <td>{{ record.machine_serial_number }}</td>
+                <td>{{ record.machine_type }}</td>
+                <td>{{ record.billing_address }}</td>
+                <td>{{ record.frequency }}</td>
+                <td class="remarks-cell">{{ record.remarks }}</td>
+                <td class="date-of-payment-cell">{{ record.date_of_payment|default:"N/A" }}</td>
+                <td class="bill-no-cell">{{ record.bill_no }}</td>
+                <td class="utr-no-cell">{{ record.utr_no|default:"N/A" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% elif selected_remarks %}
+        <p>No AMC records found for the selected status.</p>
+    {% endif %}
+</body>
+</html>
