@@ -22,7 +22,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-ve-@1eusin6ew9(b@!82@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://insight-management-solutions.onrender.com']
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
@@ -33,17 +33,20 @@ import json
 import os
 
 # Initialize Firebase
-if 'FIREBASE_CREDENTIALS' in os.environ:
-    # For production: use environment variable
-    firebase_creds_dict = json.loads(os.environ.get('FIREBASE_CREDENTIALS'))
-    cred = credentials.Certificate(firebase_creds_dict)
-else:
-    # For local development: use file
-    cred = credentials.Certificate("C:/Users/asus/firebase_project/firebase_project/insightmanagementsolutio-9b168-firebase-adminsdk-1mfhg-68f1d9870e.json")
-
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://insightmanagementsolutio-9b168-default-rtdb.firebaseio.com/'
-})
+try:
+    if 'FIREBASE_CREDENTIALS' in os.environ:
+        # For production: use environment variable
+        firebase_creds_dict = json.loads(os.environ.get('FIREBASE_CREDENTIALS'))
+        cred = credentials.Certificate(firebase_creds_dict)
+    else:
+        # For local development: use file
+        cred = credentials.Certificate("C:/Users/asus/firebase_project/firebase_project/insightmanagementsolutio-9b168-firebase-adminsdk-1mfhg-68f1d9870e.json")
+    
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': 'https://insightmanagementsolutio-9b168-default-rtdb.firebaseio.com/'
+    })
+except Exception as e:
+    print(f"Firebase initialization error: {e}")
 
 
 # Application definition
