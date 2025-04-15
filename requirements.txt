@@ -3,3 +3,6 @@ firebase-admin
 gunicorn
 whitenoise
 python-dateutil
+requests
+six
+pytz
