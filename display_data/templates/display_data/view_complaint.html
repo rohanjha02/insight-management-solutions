@@ -109,21 +109,6 @@
                 <td>Address</td>
                 <td>{{ complaint.address }}</td>
             </tr>
-
-            <!-- Assigned Engineer Details -->
-            <tr>
-                <td>Assigned Engineer</td>
-                <td>
-                    {% if assigned_engineer %}
-                        <strong>Name:</strong> {{ assigned_engineer.name }}<br>
-                        <strong>Contact:</strong> {{ assigned_engineer.contact }}<br>
-                        <strong>Email:</strong> {{ assigned_engineer.email }}
-                    {% else %}
-                        No engineer assigned.
-                    {% endif %}
-                </td>
-            </tr>
-
             <tr>
                 <td>Remarks</td>
                 <td>{{ complaint.remarks }}</td>
