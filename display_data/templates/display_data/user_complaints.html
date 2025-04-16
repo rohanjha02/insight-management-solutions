@@ -222,7 +222,10 @@
                         <td>{{ user.mobile_number }}</td>
                         <td>{{ user.state }}</td>
                         <td>{{ user.createdAt }}</td>
-                        <td>{{ user.assigned_engineer.name }}</td>
+                        <td>
+                            <strong>{{ user.assigned_engineer.name }}</strong><br>
+                            <small>{{ user.assigned_engineer.contact }}</small>
+                        </td>  
                         <td>
                             <form method="GET" action="{% url 'view_complaint_details' %}">
                                 <input type="hidden" name="branch" value="{{ user.branch }}">
