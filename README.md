@@ -1,21 +1,3 @@
-﻿
-`          `![](Aspose.Words.ea43b0ff-410b-4ebd-a017-1f203a4db6ce.001.png)
-
-`    `**Insight Management Solutions: Business Operations                    Management System Development**
-
-`                                         `An Industry Internship Report Submitted by
-
-`                                       `**Rohan Kumar Jha (22112025)**</sub> 
-
-CHRIST (Deemed to be University), Pune, Lavasa Campus
-
-` 				     `January –</sub> May 2025
-
-
-
-
-
-
 **INDEX** 
 
 |**S. No**</sub> |**Title of Content**</sub> |**Page No**</sub> |
