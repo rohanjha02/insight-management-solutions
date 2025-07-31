@@ -97,10 +97,6 @@ The Insight Management Solutions project is a comprehensive web application buil
 
 **COMPANY PROFILE** 
 
-`                                               `**![](Aspose.Words.ea43b0ff-410b-4ebd-a017-1f203a4db6ce.002.jpeg)** 
-**\
-
-
 **Insight Management Solutions** (IMS) is a leading provider of Currency, Banking & Office Automation products. Their mission, "Unlocking the Power of Data to Illuminate Your Path to Success," underscores their commitment to excellence and customer satisfaction. IMS values a customer-centric approach, offering personalized solutions that prioritize customer needs. Moreover, they focus on delivering high-performance solutions at competitive prices, demonstrating their dedication to providing exceptional value for money. Additionally, IMS actively promotes social responsibility, with initiatives supporting women's empowerment, employee welfare, and happiness. 
 
 
